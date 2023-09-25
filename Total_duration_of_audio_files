@@ -1,0 +1,32 @@
+#This code calculates total duration(seconds) of all the audio files in your python folders
+#Modify the file extensions to include more type of files into your code 
+
+import os
+from moviepy.editor import AudioFileClip
+
+def get_audio_durations(folder_path):
+    audio_durations = {}
+    
+    # Iterate over all files in the folder
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        
+        # Check if it's an audio file (you can add more audio extensions if needed)
+        if filename.endswith(('.mp3', '.wav', '.ogg', '.flac')):  #You can add other extensions here
+            try:
+                audio_clip = AudioFileClip(file_path)
+                duration = audio_clip.duration
+                audio_durations[filename] = duration
+                print(f"{audio_clip}: duration = {duration}")
+                audio_clip.close()
+            except Exception as e:
+                print(f"Error processing {filename}: {str(e)}")
+    
+    return audio_durations
+
+if __name__ == "__main__":
+    folder_path = "D:\\SEM V\\R&D\\Week 7\\train\\audios"  # Replace with the path to your audio folder
+    audio_durations = get_audio_durations(folder_path)
+    
+    for filename, duration in audio_durations.items():
+        print(f"{filename}: {duration} seconds")

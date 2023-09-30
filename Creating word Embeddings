@@ -1,0 +1,39 @@
+"""This code is explained on https://machinelearningmastery.com/use-word-embedding-layers-deep-learning-keras/"""
+
+from tensorflow.keras.preprocessing.text import one_hot
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+import tensorflow as tf
+
+
+reviews=["nice food",
+         "amazing restaurant",
+         "too good",
+         "just loved it",
+         "will go again",
+         "horrible food",
+         "never go there",
+         "poor service",
+         "poor quality",
+         "needs improvement"]
+labels = tf.constant([1,1,1,1,1,0,0,0,0,0])
+
+
+vocab_size=50
+one_hot(" service",30)
+encoded_docs = [one_hot(d,vocab_size) for d in reviews]
+
+
+max_len=max([len(d) for d in encoded_docs])
+padded_reviews=pad_sequences(encoded_docs,padding="pre",maxlen=max_len)
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding,Dense,Flatten
+
+
+model=Sequential()
+model.add(Embedding(vocab_size,8,input_length=max_len,name='Embedding'))
+model.add(Flatten())
+model.add(Dense(1,activation='sigmoid'))
+model.compile(optimizer='adam',loss='binary_crossentropy',metrics=['accuracy'])
+
+print(model.get_layer('Embedding').get_weights())
